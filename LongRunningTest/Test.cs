@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LongRunningTest
 {
@@ -7,7 +9,8 @@ namespace LongRunningTest
         private bool testSuccessful;
         private string error = "";
         private int testDuration;
-        public abstract void Run();
+        private CancellationTokenSource cts;
+        public abstract Task Run();
         public abstract Dictionary<string, string> ReturnResults();
     }
 }

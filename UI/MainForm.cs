@@ -28,50 +28,57 @@ namespace UI
                 MessageBox.Show("Введите идентификатор изделия.");
                 return;
             }
+            cmbTests.Enabled = false;
             btnStart.Enabled = false;
             btnStop.Enabled = true;
             lblStatus.Text = "Статус: выполняется тест";
+            cts = new CancellationTokenSource();
             switch (cmbTests.SelectedIndex)
             {
                 case 0:
-                    currentTest = new TestOneOut();
+                    currentTest = new TestOneOut(cts);
                     break;
                 case 1:
-                    currentTest = new TestTwoOut();
+                    currentTest = new TestTwoOut(cts);
                     break;
                 case 2:
-                    currentTest = new TestThreeOut();
+                    currentTest = new TestThreeOut(cts);
                     break;
             }
-            cts = new CancellationTokenSource();
             try
             {
-                await Task.Run(() => currentTest.Run(), cts.Token);
+                await currentTest.Run();
                 Dictionary<string, string> results = currentTest.ReturnResults();
-                using (StreamWriter outputFile = new StreamWriter($"{productId}.txt"))
+                string path = Directory.GetCurrentDirectory();
+                if (!Directory.Exists(path + "\\results"))
                 {
-                    if (results["testSuccessful"] == "True")
-                    {
-                        foreach (string key in results.Keys.Skip(2))
-                        {
-                            outputFile.WriteLine($"{key}: {results[key]}");
-                        }
-                    }
-                    else if (results["testSuccessful"] == "False")
-                    {
-                        outputFile.WriteLine($"error: {results["error"]}");
-                    }
-                    lblStatus.Text = "Статус: тест завершён. Результаты сохранены.";
+                    Directory.CreateDirectory(path + "\\results");
                 }
+                using (StreamWriter outputFile = new StreamWriter(path + $"\\results\\{productId}.txt"))
+                    {
+                        if (results["testSuccessful"] == "True")
+                        {
+                            foreach (string key in results.Keys.Skip(2))
+                            {
+                                outputFile.WriteLine($"{key}: {results[key]}");
+                            }
+                        }
+                        else if (results["testSuccessful"] == "False")
+                        {
+                            outputFile.WriteLine($"error: {results["error"]}");
+                        }
+                        lblStatus.Text = "Статус: тест завершён. Результаты сохранены.";
+                    }
             }
             catch (OperationCanceledException)
             {
-                lblStatus.Text = "Статус: выполнение теста приостановлено";
+                lblStatus.Text = "Статус: ожидается";
             }
             finally
             {
                 btnStart.Enabled = true;
                 btnStop.Enabled = false;
+                cmbTests.Enabled = true;
                 cts = null;
             }
         }

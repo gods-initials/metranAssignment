@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace LongRunningTest
 {
@@ -10,18 +11,20 @@ namespace LongRunningTest
         private Random rand;
         private int testDuration;
         private bool testSuccessful;
+        private CancellationTokenSource cts;
         private string error;
         private float param1;
-        public TestOneOut()
+        public TestOneOut(CancellationTokenSource tokenSource)
         {
+            cts = tokenSource;
             param1 = 0;
             error = "";
             rand = new Random();
-            testDuration = 1000;
+            testDuration = 10000;
         }
-        public override void Run()
+        public override async Task Run()
         {
-            Thread.Sleep(testDuration);
+            await Task.Delay(testDuration, cts.Token);
             param1 = rand.Next();
             testSuccessful = Convert.ToBoolean(rand.Next(2));
             if (!testSuccessful)
