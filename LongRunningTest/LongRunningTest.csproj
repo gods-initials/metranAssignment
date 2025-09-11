@@ -2,9 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Dll</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
 
 </Project>

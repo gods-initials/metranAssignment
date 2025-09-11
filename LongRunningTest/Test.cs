@@ -1,10 +1,13 @@
-﻿namespace LongRunningTest;
+﻿using System.Collections.Generic;
 
-public abstract class Test
+namespace LongRunningTest
 {
-    private bool testSuccessful;
-    private string error = "";
-    private int testDuration;
-    public abstract void Run();
-    public abstract Dictionary<string,string> ReturnResults();
+    public abstract class Test
+    {
+        private bool testSuccessful;
+        private string error = "";
+        private int testDuration;
+        public abstract void Run();
+        public abstract Dictionary<string, string> ReturnResults();
+    }
 }
