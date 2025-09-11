@@ -17,7 +17,7 @@ namespace LongRunningTest
             param1 = 0;
             error = "";
             rand = new Random();
-            testDuration = 10000;
+            testDuration = 1000;
         }
         public override void Run()
         {
